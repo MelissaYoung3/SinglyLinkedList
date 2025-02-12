@@ -1,0 +1,73 @@
+#include <iostream>
+
+class Node {
+public:
+    int data;
+    Node* next;
+    Node(int val) : data(val), next(nullptr) {}
+};
+
+class SinglyLinkedList {
+protected:
+    Node* head;
+    Node* tail;
+    int count;
+
+public:
+    SinglyLinkedList() : head(nullptr), tail(nullptr), count(0) {}
+    
+    void insertAtEnd(int val) {
+        Node* newNode = new Node(val);
+        if (!head) {
+            head = tail = newNode;
+        } else {
+            tail->next = newNode;
+            tail = newNode;
+        }
+        count++;
+    }
+    
+    void display() {
+        Node* temp = head;
+        std::cout << "Print the list:\nHead -> ";
+        while (temp) {
+            std::cout << temp->data << " -> ";
+            temp = temp->next;
+        }
+        std::cout << "nullptr\n";
+    }
+    
+    void reversePrint() {
+        std::cout << "Reverse print the list:\n";
+        reversePrintHelper(head);
+        std::cout << "Head\n";
+    }
+
+private:
+    void reversePrintHelper(Node* node) {
+        if (!node) {
+            std::cout << "nullptr";
+            return;
+        }
+        reversePrintHelper(node->next);
+        std::cout << " <- " << node->data;
+    }
+};
+
+int main() {
+    SinglyLinkedList list;
+    
+    // Insert at least 10 items
+    for (int i = 5; i <= 50; i += 5) {
+        list.insertAtEnd(i);
+    }
+    
+    // Display the list normally
+    list.display();
+    
+    // Display the list in reverse order
+    list.reversePrint();
+    
+    return 0;
+}
+
