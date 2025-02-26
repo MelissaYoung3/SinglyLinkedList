@@ -1,0 +1,120 @@
+#include <iostream>
+using namespace std;
+
+// Node structure
+struct Node {
+    int data;
+    Node* next;
+
+    Node(int val) : data(val), next(nullptr) {}
+};
+
+// SinglyLinkedList class
+class SinglyLinkedList {
+protected:
+    Node* first;
+    Node* last;
+    int count;
+
+public:
+    SinglyLinkedList() : first(nullptr), last(nullptr), count(0) {}
+
+    // Insert at the end
+    void insert(int value) {
+        Node* newNode = new Node(value);
+        if (first == nullptr) {
+            first = last = newNode;
+        } else {
+            last->next = newNode;
+            last = newNode;
+        }
+        count++;
+    }
+
+    // Display the list
+    void display() {
+        Node* current = first;
+        cout << "list: (" << count << "): ";
+        while (current) {
+            cout << current->data << " -> ";
+            current = current->next;
+        }
+        cout << "nullptr" << endl;
+    }
+
+    // Clear the list
+    void clear() {
+        first = last = nullptr;
+        count = 0;
+    }
+
+    // Getters and Setters
+    Node*& getFirst() { return first; }
+    Node*& getLast() { return last; }
+    int& getCount() { return count; }
+};
+
+// SplitLinkedList class derived from SinglyLinkedList
+class SplitLinkedList : public SinglyLinkedList {
+public:
+    void splitEvensOdds(SinglyLinkedList& evensList, SinglyLinkedList& oddsList) {
+        Node* current = getFirst(); //Use getter
+
+        while (current) {
+            Node* nextNode = current->next; // Store next node before manipulation
+            current->next = nullptr; // Detach the node
+
+            if (current->data % 2 == 0) { // Even number
+                if (evensList.getCount() == 0) {
+                    evensList.getFirst() = evensList.getLast() = current;
+                } else {
+                    evensList.getLast()->next = current;
+                    evensList.getLast() = current;
+                }
+                evensList.getCount()++;
+            } else { // Odd number
+                if (oddsList.getCount() == 0) {
+                    oddsList.getFirst() = oddsList.getLast() = current;
+                } else {
+                    oddsList.getLast()->next = current;
+                    oddsList.getLast() = current;
+                }
+                oddsList.getCount()++;
+            }
+
+            current = nextNode; // Move to next node
+        }
+
+        // Clear original list
+        this->clear();
+    }
+};
+
+// Main function
+int main() {
+    SplitLinkedList list;
+    SinglyLinkedList evensList, oddsList;
+
+    cout << "Enter integers ending with -999:\n";
+    int num;
+    while (cin >> num && num != -999) {
+        list.insert(num);
+    }
+
+    cout << "\nOriginal ";
+    list.display();
+
+    // Perform split operation
+    list.splitEvensOdds(evensList, oddsList);
+
+    // Display results
+    cout << "\nEvens ";
+    evensList.display();
+    cout << "Odds ";
+    oddsList.display();
+    cout << "Original list ";
+    list.display();
+
+    return 0;
+}
+
